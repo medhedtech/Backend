@@ -1,0 +1,45 @@
+{
+  "name": "medh-backend",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "npm run start:user",
+    "build": "tsc",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start:user": "npm --prefix services/user-service run start",
+    "start:course": "npm --prefix services/course-service run start"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "@types/chalk": "^0.4.31",
+    "@types/cookie-parser": "^1.4.8",
+    "@types/csurf": "^1.11.5",
+    "@types/helmet": "^0.0.48",
+    "@types/mongodb": "^4.0.6",
+    "@types/node": "^22.15.18",
+    "@types/winston": "^2.4.4",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.3"
+  },
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.810.0",
+    "@aws-sdk/s3-presigned-post": "^3.810.0",
+    "@aws-sdk/s3-request-presigner": "^3.810.0",
+    "@sentry/node": "^9.19.0",
+    "@types/multer": "^1.4.12",
+    "chalk": "^5.4.1",
+    "cookie-parser": "^1.4.7",
+    "csurf": "^1.11.0",
+    "express-mongo-sanitize": "^2.2.0",
+    "helmet": "^8.1.0",
+    "mongodb": "^6.16.0",
+    "multer": "^1.4.5-lts.2",
+    "winston": "^3.17.0",
+    "winston-daily-rotate-file": "^5.0.0",
+    "winston-transport": "^4.9.0",
+    "xss-clean": "^0.1.4"
+  }
+}
