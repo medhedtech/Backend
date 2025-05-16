@@ -3,10 +3,16 @@ import Course from '../../../../shared/models/course-model';
 import EnrolledCourse from '../../../../shared/models/enrolled-courses-model';
 import EnrolledModule from '../../../../shared/models/enrolled-modules.model';
 import User from '../../../../shared/models/user';
-import { errorHandler } from '../../../../shared/utils/errorHandler';
+import { errorHandler as sharedErrorHandler } from '../../../../shared/utils/errorHandler';
 import logger from '../../../../shared/utils/logger';
 import OnlineMeeting from '../../../../shared/models/online-meeting-model';
 import Student from '../../../../shared/models/student-model';
+import { CourseInfoService } from '../services/course-info-service';
+
+// Create a wrapper for errorHandler to handle type differences
+const errorHandler = (err: any, req: Request, res: Response, next: NextFunction) => {
+  sharedErrorHandler(err, req as any, res as any, next);
+};
 
 // Create a new enrollment with EMI support
 export const createEnrolledCourse = async (
@@ -43,10 +49,24 @@ export const createEnrolledCourse = async (
       return res.status(404).json({ success: false, message: 'Student not found' });
     }
 
-    // Check if the course exists
-    const course = await Course.findById(course_id);
-    if (!course) {
-      return res.status(404).json({ success: false, message: 'Course not found' });
+    // Check if the course exists using the course service
+    let courseDetails;
+    try {
+      // Check course availability through the Course service
+      const isCourseAvailable = await CourseInfoService.isCourseAvailable(course_id);
+      if (!isCourseAvailable) {
+        return res.status(404).json({ success: false, message: 'Course not found or not available for enrollment' });
+      }
+      
+      // Get the course details using the service
+      courseDetails = await CourseInfoService.getCourseDetails(course_id);
+    } catch (error) {
+      // Fallback to direct database access if service is unavailable
+      logger.warn('Course service unavailable, falling back to direct database access', { error });
+      courseDetails = await Course.findById(course_id);
+      if (!courseDetails) {
+        return res.status(404).json({ success: false, message: 'Course not found' });
+      }
     }
 
     // Prevent duplicate enrollment
@@ -117,8 +137,8 @@ export const createEnrolledCourse = async (
     await newEnrolled.save();
 
     // Create modules if course has videos
-    if (course.course_videos?.length) {
-      const modules = course.course_videos.map((url: string) => ({
+    if ((courseDetails as any).course_videos?.length) {
+      const modules = (courseDetails as any).course_videos.map((url: string) => ({
         student_id,
         course_id,
         enrollment_id: newEnrolled._id,
@@ -249,7 +269,7 @@ export const updateEnrolledCourse = async (
     });
     if (typeof updateData.is_completed !== 'undefined') {
       enrollment.is_completed = updateData.is_completed;
-      enrollment.completed_on = updateData.is_completed ? new Date() : null;
+      enrollment.completed_on = updateData.is_completed ? new Date() : undefined;
       if (updateData.is_completed) enrollment.status = 'completed';
     }
     const updated = await enrollment.save();
@@ -336,7 +356,7 @@ export const getUpcomingMeetingsForStudent = async (
     if (!enrollments.length) {
       return res.status(404).json({ success: false, message: 'No active enrollments found' });
     }
-    const courseNames = enrollments.map(e => e.course_id.course_title);
+    const courseNames = enrollments.map(e => (e.course_id as any).course_title);
     const upcoming = await OnlineMeeting.find({ course_name: { $in: courseNames }, date: { $gte: new Date() } })
       .sort({ date: 1, time: 1 })
       .limit(Number(limit));
@@ -441,7 +461,7 @@ export const watchVideo = async (
     module.is_watched = true;
     await module.save();
     const course = await Course.findById(module.course_id);
-    if (course.course_videos.length === (await EnrolledModule.countDocuments({ course_id: module.course_id, student_id, is_watched: true }))) {
+    if (course && (course as any).course_videos && (course as any).course_videos.length === (await EnrolledModule.countDocuments({ course_id: module.course_id, student_id, is_watched: true }))) {
       await EnrolledCourse.findOneAndUpdate({ course_id: module.course_id, student_id, is_completed: false }, { is_completed: true, completed_on: new Date(), status: 'completed' });
     }
     res.status(200).json({ success: true, message: 'Video watched' });

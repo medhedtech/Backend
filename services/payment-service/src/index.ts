@@ -46,7 +46,7 @@ app.use('/api/v1/enrollments', enrollmentRoutes);
 // Error handler
 app.use(errorHandler as any);
 
-const PORT = process.env.PORT || 8081;
+const PORT = 3003;
 app.listen(PORT, () => {
   console.log(`Payment service listening on port ${PORT}`);
 }); 

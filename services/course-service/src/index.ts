@@ -37,11 +37,21 @@ app.use((req, res, next) => {
 });
 
 // MongoDB connection
-const mongoUri = process.env.MONGO_URI || 'mongodb://localhost:27017/CourseDB';
+const mongoUri = process.env.MONGO_URI || 'mongodb+srv://medhupskill:Medh567upskill@medh.xmifs.mongodb.net/MedhDB';
 mongoose.set('strictQuery', false);
-mongoose.connect(mongoUri,{ autoIndex: true })
-  .then(() => console.log('MongoDB connected'))
-  .catch(err => console.error('MongoDB connection error:', err));
+
+// Configure mongoose globally to prevent buffering timeout issues
+mongoose.set('bufferTimeoutMS', 30000); // Increase buffer timeout to 30 seconds
+
+mongoose.connect(mongoUri, { 
+  autoIndex: true,
+  serverSelectionTimeoutMS: 60000, // 60 seconds
+  connectTimeoutMS: 60000, // 60 seconds
+  socketTimeoutMS: 90000, // 90 seconds
+  bufferCommands: true, // Enable buffering with extended timeout
+})
+.then(() => console.log('MongoDB connected'))
+.catch(err => console.error('MongoDB connection error:', err));
 
 // Health check / root API v1 endpoint
 app.get('/api/v1', (req, res) => {
@@ -52,5 +62,5 @@ app.get('/api/v1', (req, res) => {
 app.use('/api/v1/courses', courseRoutes);
 
 // Start server
-const PORT = process.env.PORT || 5001;
+const PORT = 3002;
 app.listen(PORT, () => console.log(`Course Service running on port ${PORT}`)); 

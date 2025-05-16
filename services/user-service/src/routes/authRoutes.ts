@@ -5,23 +5,22 @@ import { loginLimiter, registerLimiter, passwordResetLimiter } from '../middlewa
 
 const router = express.Router();
 
+// Public routes (no authentication required)
 // Registration & Login
-router.post('/register', registerLimiter, authController.registerUser.bind(authController));
-router.post('/login', loginLimiter, authController.loginUser.bind(authController));
-router.post('/refresh-token', authController.refreshToken.bind(authController));
-router.post('/logout', authenticateToken, authController.logout.bind(authController));
+router.post('/register', registerLimiter, authController.registerUser);
+router.post('/login', loginLimiter, authController.loginUser);
+router.post('/refresh-token', authController.refreshToken);
+router.post('/forgot-password', passwordResetLimiter, authController.forgotPassword);
+router.post('/reset-password', passwordResetLimiter, authController.resetPassword);
 
-// Password Reset
-router.post('/forgot-password', passwordResetLimiter, authController.forgotPassword.bind(authController));
-router.post('/reset-password', passwordResetLimiter, authController.resetPassword.bind(authController));
-
-// User Management
-router.get('/users', authenticateToken, authController.getAllUsers.bind(authController));
-router.get('/get-all-students', authenticateToken, authController.getAllStudents.bind(authController));
-router.get('/users/:id', authenticateToken, authController.getUserById.bind(authController));
-router.put('/users/:id', authenticateToken, authController.updateUser.bind(authController));
-router.put('/users/email/:email', authenticateToken, authController.updateUserByEmail.bind(authController));
-router.delete('/users/:id', authenticateToken, authController.deleteUser.bind(authController));
-router.put('/toggle-status/:id', authenticateToken, authController.toggleUserStatus.bind(authController));
+// Protected routes (authentication required)
+router.post('/logout', authenticateToken, authController.logout);
+router.get('/users', authenticateToken, authController.getAllUsers);
+router.get('/get-all-students', authenticateToken, authController.getAllStudents);
+router.get('/users/:id', authenticateToken, authController.getUserById);
+router.put('/users/:id', authenticateToken, authController.updateUser);
+router.put('/users/email/:email', authenticateToken, authController.updateUserByEmail);
+router.delete('/users/:id', authenticateToken, authController.deleteUser);
+router.put('/toggle-status/:id', authenticateToken, authController.toggleUserStatus);
 
 export default router; 

@@ -1,0 +1,123 @@
+version: '3'
+
+services:
+  # API Gateway
+  api-gateway:
+    build:
+      context: .
+      dockerfile: ./services/api-gateway/Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      - API_GATEWAY_PORT=8080
+      - USER_SERVICE_PORT=3001
+      - COURSE_SERVICE_PORT=3002
+      - PAYMENT_SERVICE_PORT=3003
+      - EMAIL_SERVICE_PORT=3004
+      - FILE_SERVICE_PORT=3005
+      - SEARCH_SERVICE_PORT=3006
+      - ANALYTICS_SERVICE_PORT=3007
+      - ADMIN_SERVICE_PORT=3008
+    depends_on:
+      - user-service
+      - course-service
+      - payment-service
+      - email-service
+      - file-service
+      - search-service
+      - analytics-service
+      - admin-service
+    networks:
+      - backend-network
+
+  # User Service
+  user-service:
+    build:
+      context: .
+      dockerfile: ./services/user-service/Dockerfile
+    environment:
+      - PORT=3001
+      - MONGO_URI=mongodb+srv://medhupskill:Medh567upskill@medh.xmifs.mongodb.net/MedhDB
+    networks:
+      - backend-network
+
+  # Course Service
+  course-service:
+    build:
+      context: .
+      dockerfile: ./services/course-service/Dockerfile
+    environment:
+      - PORT=3002
+      - MONGO_URI=mongodb+srv://medhupskill:Medh567upskill@medh.xmifs.mongodb.net/MedhDB
+    networks:
+      - backend-network
+
+  # Payment Service
+  payment-service:
+    build:
+      context: .
+      dockerfile: ./services/payment-service/Dockerfile
+    environment:
+      - PORT=3003
+      - MONGO_URI=mongodb+srv://medhupskill:Medh567upskill@medh.xmifs.mongodb.net/MedhDB
+    networks:
+      - backend-network
+
+  # Email Service
+  email-service:
+    build:
+      context: .
+      dockerfile: ./services/email-service/Dockerfile
+    environment:
+      - PORT=3004
+      - MONGO_URI=mongodb+srv://medhupskill:Medh567upskill@medh.xmifs.mongodb.net/MedhDB
+    networks:
+      - backend-network
+
+  # File Service
+  file-service:
+    build:
+      context: .
+      dockerfile: ./services/file-service/Dockerfile
+    environment:
+      - PORT=3005
+      - MONGO_URI=mongodb+srv://medhupskill:Medh567upskill@medh.xmifs.mongodb.net/MedhDB
+    networks:
+      - backend-network
+
+  # Search Service
+  search-service:
+    build:
+      context: .
+      dockerfile: ./services/search-service/Dockerfile
+    environment:
+      - PORT=3006
+      - MONGO_URI=mongodb+srv://medhupskill:Medh567upskill@medh.xmifs.mongodb.net/MedhDB
+    networks:
+      - backend-network
+
+  # Analytics Service
+  analytics-service:
+    build:
+      context: .
+      dockerfile: ./services/analytics-service/Dockerfile
+    environment:
+      - PORT=3007
+      - MONGO_URI=mongodb+srv://medhupskill:Medh567upskill@medh.xmifs.mongodb.net/MedhDB
+    networks:
+      - backend-network
+
+  # Admin Service
+  admin-service:
+    build:
+      context: .
+      dockerfile: ./services/admin-service/Dockerfile
+    environment:
+      - PORT=3008
+      - MONGO_URI=mongodb+srv://medhupskill:Medh567upskill@medh.xmifs.mongodb.net/MedhDB
+    networks:
+      - backend-network
+
+networks:
+  backend-network:
+    driver: bridge 
