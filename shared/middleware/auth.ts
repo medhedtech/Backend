@@ -9,5 +9,8 @@ export const authenticateToken = (
   next: NextFunction,
 ) => {
   // TODO: Implement JWT or session authentication logic here
+  // Stub: attach a placeholder user ID from header or default
+  const uid = (req.headers['x-user-id'] as string) || 'anonymous';
+  (req as any).user = { id: uid };
   next();
 }; 

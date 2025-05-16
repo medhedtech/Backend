@@ -25,7 +25,8 @@ export const errorHandler = (
   err.statusCode = err.statusCode || 500;
   err.status = err.status || 'error';
 
-  if (process.env.NODE_ENV === 'development') {
+  // Treat any environment other than production as development mode
+  if (process.env.NODE_ENV !== 'production') {
     logger.error('Error details:', {
       error: err,
       stack: err.stack,

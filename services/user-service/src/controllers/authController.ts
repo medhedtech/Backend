@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import bcrypt from 'bcryptjs';
-import User from '../models/user';
+import User from '../../../../shared/models/user';
 import userValidation from '../validations/userValidation';
 import EmailService from '../services/emailService';
 import jwt from 'jsonwebtoken';

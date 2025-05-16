@@ -9,6 +9,11 @@
             "date": 1747307353678,
             "name": "/Users/abhishekjha/Documents/backendts/services/course-service/logs/combined-2025-05-15.log",
             "hash": "35feec370259db4193c9e5ec0040889970c41f983cd795e55d28d35cfd54e05f"
+        },
+        {
+            "date": 1747373533299,
+            "name": "/Users/abhishekjha/Documents/backendts/services/course-service/logs/combined-2025-05-16.log",
+            "hash": "7f8d229d3467fff15e5c89ee291556b0d245808fd0b67eeaac69489510699b84"
         }
     ],
     "hashType": "sha256"

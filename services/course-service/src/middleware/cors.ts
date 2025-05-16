@@ -1,7 +1,7 @@
 import cors from 'cors';
 import { Request, Response, NextFunction } from 'express';
-import logger from '../utils/logger';
-import { ENV_VARS } from '../config/envVars';
+import logger from '../../../../shared/utils/logger';
+import { ENV_VARS } from '../../../../shared/config/envVars';
 
 // CORS configuration
 export const corsOptions: cors.CorsOptions = {

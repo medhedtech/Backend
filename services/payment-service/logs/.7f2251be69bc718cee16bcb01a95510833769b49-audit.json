@@ -1,0 +1,15 @@
+{
+    "keep": {
+        "days": true,
+        "amount": 14
+    },
+    "auditLog": "/Users/abhishekjha/Documents/backendts/services/payment-service/logs/.7f2251be69bc718cee16bcb01a95510833769b49-audit.json",
+    "files": [
+        {
+            "date": 1747309890062,
+            "name": "/Users/abhishekjha/Documents/backendts/services/payment-service/logs/combined-2025-05-15.log",
+            "hash": "448c4966c97e51279dcf5bc95830f70d1ae04b7a1f21681c71da3015d0d6b5ee"
+        }
+    ],
+    "hashType": "sha256"
+}

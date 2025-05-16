@@ -27,7 +27,14 @@ app.use(mongoSanitize());
 app.use(xss());
 // Cookies & CSRF
 app.use(cookieParser());
-app.use(csurf({ cookie: { httpOnly: true, secure: process.env.NODE_ENV === 'production' } }) as any);
+// Apply CSRF protection only for non-safe methods
+const csrfProtection = csurf({ cookie: { httpOnly: true, secure: process.env.NODE_ENV === 'production' } }) as any;
+app.use((req, res, next) => {
+  if (['GET', 'HEAD', 'OPTIONS'].includes(req.method)) {
+    return next();
+  }
+  return csrfProtection(req, res, next);
+});
 
 // MongoDB connection
 const mongoUri = process.env.MONGO_URI || 'mongodb://localhost:27017/CourseDB';
