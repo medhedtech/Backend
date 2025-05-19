@@ -4,6 +4,7 @@
   "main": "index.js",
   "scripts": {
     "start": "npm run start:gateway",
+    "dev": "npm run dev:gateway",
     "build": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1",
     "start:user": "npm --prefix services/user-service run start",
@@ -17,6 +18,17 @@
     "start:gateway": "npm --prefix services/api-gateway run start",
     "start:all": "concurrently \"npm run start:user\" \"npm run start:course\" \"npm run start:payment\" \"npm run start:gateway\"",
     "start:full": "concurrently \"npm run start:user\" \"npm run start:course\" \"npm run start:payment\" \"npm run start:email\" \"npm run start:file\" \"npm run start:search\" \"npm run start:analytics\" \"npm run start:admin\" \"npm run start:gateway\"",
+    "dev:user": "npm --prefix services/user-service run dev",
+    "dev:course": "npm --prefix services/course-service run dev",
+    "dev:payment": "npm --prefix services/payment-service run dev",
+    "dev:email": "npm --prefix services/email-service run dev",
+    "dev:file": "npm --prefix services/file-service run dev",
+    "dev:search": "npm --prefix services/search-service run dev",
+    "dev:analytics": "npm --prefix services/analytics-service run dev",
+    "dev:admin": "npm --prefix services/admin-service run dev",
+    "dev:gateway": "npm --prefix services/api-gateway run dev",
+    "dev:all": "concurrently \"npm run dev:user\" \"npm run dev:course\" \"npm run dev:payment\" \"npm run dev:gateway\"",
+    "dev:full": "concurrently \"npm run dev:user\" \"npm run dev:course\" \"npm run dev:payment\" \"npm run dev:email\" \"npm run dev:file\" \"npm run dev:search\" \"npm run dev:analytics\" \"npm run dev:admin\" \"npm run dev:gateway\"",
     "check-services": "ts-node services/check-services.ts"
   },
   "keywords": [],
@@ -36,6 +48,7 @@
     "@types/nodemailer": "^6.4.17",
     "@types/winston": "^2.4.4",
     "concurrently": "^8.2.2",
+    "nodemon": "^3.1.10",
     "ts-node": "^10.9.2",
     "typescript": "^5.8.3"
   },
