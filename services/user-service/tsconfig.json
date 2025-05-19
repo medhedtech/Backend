@@ -111,5 +111,5 @@
     // "skipDefaultLibCheck": true,                      /* Skip type checking .d.ts files that are included with TypeScript. */
     "skipLibCheck": true                                 /* Skip type checking all .d.ts files. */
   },
-  "include": ["src/**/*", "../../shared/models/**/*"]
+  "include": ["src/**/*", "../../shared/models/**/*", "../course-service/src/models/batch-model.ts", "../course-service/src/models/bookmark-model.ts", "../course-service/src/models/course-model.ts", "../course-service/src/models/lesson-schemas.ts", "../course-service/src/models/note-model.ts", "../course-service/src/models/progress-model.ts"]
 }

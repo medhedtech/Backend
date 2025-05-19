@@ -11,12 +11,12 @@ import {
   deleteS3Object as s3DeleteObject,
 } from '../config/aws-config';
 import { ENV_VARS } from '../config/envVars';
-import Bookmark from '../../../../shared/models/bookmark-model';
-import Course from '../../../../shared/models/course-model';
+import Bookmark from '../models/bookmark-model';
+import Course from '../models/course-model';
 import EnrolledCourse from '../../../../shared/models/enrolled-courses-model';
 import Enrollment from '../../../../shared/models/enrollment-model';
-import Note from '../../../../shared/models/note-model';
-import Progress from '../../../../shared/models/progress-model';
+import Note from '../models/note-model';
+import Progress from '../models/progress-model';
 import catchAsync from '../utils/catchAsync';
 import { AppError } from '../../../../shared/utils/errorHandler';
 import logger from '../utils/logger';

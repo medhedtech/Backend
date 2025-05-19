@@ -14,11 +14,11 @@ const EMAIL_RETRY_DELAY = parseInt(process.env.EMAIL_RETRY_DELAY || "60000", 10)
 const EMAIL_JOB_TIMEOUT = parseInt(process.env.EMAIL_JOB_TIMEOUT || "30000", 10); // 30 seconds
 
 // Company name for email templates
-const COMPANY_NAME = "Medh Learning Platform";
+const COMPANY_NAME = process.env.COMPANY_NAME || "Medh Learning Platform";
 
 const readFileAsync = promisify(fs.readFile);
 
-interface MailOptions {
+export interface MailOptions {
   to: string | string[];
   subject: string;
   html?: string;
@@ -29,7 +29,7 @@ interface MailOptions {
   attachments?: any[];
 }
 
-interface EmailQueueOptions {
+export interface EmailQueueOptions {
   priority?: "high" | "normal" | "low";
   skipQueue?: boolean;
   attempts?: number;
@@ -44,7 +44,7 @@ interface BullJobData {
  * Email Service
  * Handles email operations with Redis-based queuing
  */
-export default class EmailService {
+class EmailService {
   private transporter: nodemailer.Transporter;
   private templateCache: Map<string, HandlebarsTemplateDelegate>;
   private queue: Bull.Queue | null;
@@ -187,21 +187,12 @@ export default class EmailService {
     }
 
     try {
-      // Look for template in templates directory outside src first (production)
-      let templatePath = path.join(
+      // Look for template in templates directory
+      const templatePath = path.join(
         __dirname,
-        "../../templates",
+        "../templates",
         `${templateName}.hbs`
       );
-
-      // If not found, try the src/templates directory (development)
-      if (!fs.existsSync(templatePath)) {
-        templatePath = path.join(
-          __dirname,
-          "../templates",
-          `${templateName}.hbs`
-        );
-      }
       
       const templateSource = await readFileAsync(templatePath, "utf8");
 
@@ -541,17 +532,36 @@ export default class EmailService {
   }
 
   /**
-   * Create email templates directory if it doesn't exist
-   * @returns {Promise<void>}
+   * Get queue statistics
+   * @returns {Promise<object>} Queue stats
    */
-  async ensureTemplatesDirectory(): Promise<void> {
-    const templatesDir = path.join(__dirname, "../../templates");
+  async getQueueStats(): Promise<any> {
+    if (!this.queue) {
+      return { 
+        enabled: false, 
+        message: "Email queue is not enabled" 
+      };
+    }
+    
     try {
-      await fs.promises.access(templatesDir);
+      const jobCounts = await this.queue.getJobCounts();
+      const workers = await this.queue.getWorkers();
+      const isPaused = await this.queue.isPaused();
+      
+      return {
+        enabled: true,
+        isPaused,
+        workers: workers.length,
+        jobs: jobCounts
+      };
     } catch (error) {
-      // Directory doesn't exist, create it
-      await fs.promises.mkdir(templatesDir, { recursive: true });
-      console.log(`Created templates directory: ${templatesDir}`);
+      console.error("Failed to get queue statistics", { error });
+      return { 
+        enabled: true,
+        error: (error as Error).message 
+      };
     }
   }
-} 
+}
+
+export default new EmailService(); 
